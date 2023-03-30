@@ -43,7 +43,7 @@ sub_app = FastAPI(
 app.mount("/sub", sub_app)
 
 @app.post(
-    "/upsert-file",
+    "/embedding/upsert-file",
     response_model=UpsertResponse,
 )
 async def upsert_file(
@@ -61,7 +61,7 @@ async def upsert_file(
         raise HTTPException(status_code=500, detail=f"str({e})")
 
 @app.post(
-    "/upsert",
+    "/embedding/upsert",
     response_model=UpsertResponse,
 )
 async def upsert(
@@ -77,7 +77,7 @@ async def upsert(
 
 
 @app.post(
-    "/query",
+    "/embedding/query",
     response_model=QueryResponse,
 )
 async def query_main(
@@ -94,7 +94,7 @@ async def query_main(
 
 
 @sub_app.post(
-    "/query",
+    "/embedding/query",
     response_model=QueryResponse,
     # NOTE: We are describing the shape of the API endpoint input due to a current limitation in parsing arrays of objects from OpenAPI schemas. This will not be necessary in the future.
     description="Accepts search query objects array each with query and optional filter. Break down complex questions into sub-questions. Refine results by criteria, e.g. time / source, don't do this often. Split queries if ResponseTooLargeError occurs.",
@@ -113,7 +113,7 @@ async def query(
 
 
 @app.delete(
-    "/delete",
+    "/embedding/delete",
     response_model=DeleteResponse,
 )
 async def delete(

@@ -6,7 +6,7 @@ info:
   servers:
     - url: https://localhost:8000
 paths:
-  /query:
+  /embedding/query:
     post:
       summary: Query
       description: Accepts search query objects array each with query and optional filter. Break down complex questions into sub-questions. Refine results by criteria, e.g. time / source, don't do this often. Split queries if ResponseTooLargeError occurs.
@@ -49,8 +49,11 @@ components:
         created_at:
           title: Created At
           type: string
-        author:
-          title: Author
+        user_id:
+          title: User Id
+          type: string
+        org_id:
+          title: Organization Id
           type: string
         document_id:
           title: Document Id
@@ -94,8 +97,8 @@ components:
         org_id:
           title: Organization Id
           type: string
-        author:
-          title: Author
+        user_id:
+          title: User Id
           type: string
         start_date:
           title: Start Date
