@@ -8,14 +8,18 @@ import docx2txt
 import csv
 import pptx
 
-from models.models import Document, DocumentMetadata, Source
+from models.models import Document, DocumentMetadata, DocumentMetadataForm, Source
 
 
-async def get_document_from_file(file: UploadFile) -> Document:
+async def get_document_from_file(file: UploadFile, request: DocumentMetadataForm) -> Document:
     extracted_text = await extract_text_from_form_file(file)
-    metadata = DocumentMetadata(
-        source=Source.file,
-    )
+    # metadata = DocumentMetadata(
+    #     source=Source.file,
+    # )
+    metadata = request
+    if(metadata.source is None):
+        metadata.source = Source.file
+
     doc = Document(text=extracted_text, metadata=metadata)
 
     return doc

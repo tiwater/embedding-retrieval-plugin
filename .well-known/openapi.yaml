@@ -4,7 +4,7 @@ info:
   description: A retrieval API for querying and filtering documents based on natural language queries and metadata
   version: 1.0.0
   servers:
-    - url: https://your-app-url.com
+    - url: https://localhost:8000
 paths:
   /query:
     post:
@@ -90,6 +90,9 @@ components:
           $ref: "#/components/schemas/Source"
         source_id:
           title: Source Id
+          type: string
+        org_id:
+          title: Organization Id
           type: string
         author:
           title: Author

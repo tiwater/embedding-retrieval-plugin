@@ -1,6 +1,7 @@
+import json
 import os
 import uvicorn
-from fastapi import FastAPI, File, HTTPException, Depends, Body, UploadFile
+from fastapi import FastAPI, File, Form, HTTPException, Depends, Body, Request, UploadFile
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from fastapi.staticfiles import StaticFiles
 
@@ -13,6 +14,8 @@ from models.api import (
     UpsertResponse,
 )
 from datastore.factory import get_datastore
+from models.models import DocumentMetadata, DocumentMetadataForm
+from services.extract_metadata import validate_meatadata
 from services.file import get_document_from_file
 
 bearer_scheme = HTTPBearer()
@@ -39,23 +42,23 @@ sub_app = FastAPI(
 )
 app.mount("/sub", sub_app)
 
-
 @app.post(
     "/upsert-file",
     response_model=UpsertResponse,
 )
 async def upsert_file(
     file: UploadFile = File(...),
+    request: DocumentMetadataForm = Depends()
 ):
-    document = await get_document_from_file(file)
+    document = await get_document_from_file(file, request)
 
+    validate_meatadata([document])
     try:
         ids = await datastore.upsert([document])
         return UpsertResponse(ids=ids)
     except Exception as e:
         print("Error:", e)
         raise HTTPException(status_code=500, detail=f"str({e})")
-
 
 @app.post(
     "/upsert",
@@ -65,6 +68,7 @@ async def upsert(
     request: UpsertRequest = Body(...),
 ):
     try:
+        validate_meatadata(request.documents)
         ids = await datastore.upsert(request.documents)
         return UpsertResponse(ids=ids)
     except Exception as e:

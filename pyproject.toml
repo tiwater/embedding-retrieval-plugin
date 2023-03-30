@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "chatgpt-retrieval-plugin"
+name = "embedding-retrieval-plugin"
 version = "0.1.0"
 description = ""
 authors = ["isafulf <isabella@openai.com>"]

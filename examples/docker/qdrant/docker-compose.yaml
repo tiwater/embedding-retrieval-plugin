@@ -3,7 +3,7 @@ services:
     build:
       context: ../../../
       dockerfile: Dockerfile
-    image: openai/chatgpt-retrieval-plugin
+    image: openai/embedding-retrieval-plugin
     ports:
       - "80:80"
     depends_on:

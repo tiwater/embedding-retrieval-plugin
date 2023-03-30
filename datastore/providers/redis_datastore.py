@@ -23,6 +23,7 @@ from models.models import (
     DocumentMetadataFilter,
     QueryResult,
     QueryWithEmbedding,
+    Scope,
 )
 from services.date import to_unix_timestamp
 
@@ -47,7 +48,9 @@ REDIS_SEARCH_SCHEMA = {
     "metadata": {
         # "source_id": TagField("$.metadata.source_id", as_name="source_id"),
         "source": TagField("$.metadata.source", as_name="source"),
-        # "author": TextField("$.metadata.author", as_name="author"),
+        "author": TextField("$.metadata.author", as_name="author"),
+        "org_id": TextField("$.metadata.org_id", as_name="org_id"),
+        "scope": TextField("$.metadata.scope", as_name="scope"),
         # "created_at": NumericField("$.metadata.created_at", as_name="created_at"),
     },
     "embedding": VectorField(
@@ -211,6 +214,7 @@ class RedisDataStore(DataStore):
                     case "end_date":
                         return f"@{field}:[-inf {num}] "
 
+        scope_str = []
         # Build filter
         if query.filter:
             for field, value in query.filter.__dict__.items():
@@ -219,15 +223,33 @@ class RedisDataStore(DataStore):
                 if field in REDIS_SEARCH_SCHEMA:
                     filter_str += _typ_to_str(REDIS_SEARCH_SCHEMA[field], field, value)
                 elif field in REDIS_SEARCH_SCHEMA["metadata"]:
-                    if field == "source":  # handle the enum
-                        value = value.value
-                    filter_str += _typ_to_str(
-                        REDIS_SEARCH_SCHEMA["metadata"][field], field, value
-                    )
+                    if field in ["author", "org_id"]:
+                      if field == "author":
+                        scope_str.append(_typ_to_str(
+                            REDIS_SEARCH_SCHEMA["metadata"][field], field, value))
+                      else:
+                        # organization
+                        scope_str.append("(" + _typ_to_str(
+                            REDIS_SEARCH_SCHEMA["metadata"][field], field, value) +" " + 
+                            _typ_to_str(
+                            REDIS_SEARCH_SCHEMA["metadata"]["scope"], "scope", Scope.public.org)
+                            +") ")
+                    else:
+                      if field == "source":  # handle the enum
+                          value = value.value
+                      filter_str += _typ_to_str(
+                          REDIS_SEARCH_SCHEMA["metadata"][field], field, value
+                      )
                 elif field in ["start_date", "end_date"]:
                     filter_str += _typ_to_str(
                         REDIS_SEARCH_SCHEMA["metadata"]["created_at"], field, value
                     )
+        # public 
+        scope_str.append(_typ_to_str(
+                            REDIS_SEARCH_SCHEMA["metadata"]["scope"], "scope", Scope.public.public))
+        
+        filter_str += (" | ".join(scope_str))
+            
 
         # Postprocess filter string
         filter_str = filter_str.strip()

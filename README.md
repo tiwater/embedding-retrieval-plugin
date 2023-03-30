@@ -23,35 +23,48 @@ This README provides detailed information on how to set up, develop, and deploy 
 
 ## Table of Contents
 
-- [About](#about)
-  - [Plugins](#plugins)
-  - [Retrieval Plugin](#retrieval-plugin)
-  - [Memory Feature](#memory-feature)
-  - [Security](#security)
-  - [API Endpoints](#api-endpoints)
-- [Quickstart](#quickstart)
-- [Development](#development)
-  - [Setup](#setup)
-    - [General Environment Variables](#general-environment-variables)
-  - [Choosing a Vector Database](#choosing-a-vector-database)
-    - [Pinecone](#pinecone)
-    - [Weaviate](#weaviate)
-    - [Zilliz](#zilliz)
-    - [Milvus](#milvus)
-    - [Qdrant](#qdrant)
-    - [Redis](#redis)
-  - [Running the API Locally](#running-the-api-locally)
-  - [Personalization](#personalization)
-  - [Authentication Methods](#authentication-methods)
-- [Deployment](#deployment)
-  - [Deploying to Fly.io](#deploying-to-flyio)
-  - [Deploying to Heroku](#deploying-to-heroku)
-  - [Other Deployment Options](#other-deployment-options)
-- [Webhooks](#webhooks)
-- [Scripts](#scripts)
-- [Limitations](#limitations)
-- [Contributors](#contributors)
-- [Future Directions](#future-directions)
+- [ChatGPT Retrieval Plugin](#embedding-retrieval-plugin)
+  - [Introduction](#introduction)
+  - [Table of Contents](#table-of-contents)
+  - [About](#about)
+    - [Plugins](#plugins)
+    - [Retrieval Plugin](#retrieval-plugin)
+    - [Memory Feature](#memory-feature)
+    - [Security](#security)
+    - [API Endpoints](#api-endpoints)
+  - [Quickstart](#quickstart)
+  - [Development](#development)
+    - [Setup](#setup)
+      - [General Environment Variables](#general-environment-variables)
+    - [Choosing a Vector Database](#choosing-a-vector-database)
+      - [Pinecone](#pinecone)
+      - [Weaviate](#weaviate)
+        - [Set up a Weaviate Instance](#set-up-a-weaviate-instance)
+        - [Configure Weaviate Environment Variables](#configure-weaviate-environment-variables)
+      - [Zilliz](#zilliz)
+        - [Deploying the Database](#deploying-the-database)
+      - [Running Zilliz Integration Tests](#running-zilliz-integration-tests)
+      - [Milvus](#milvus)
+        - [Deploying the Database](#deploying-the-database-1)
+      - [Running Milvus Integration Tests](#running-milvus-integration-tests)
+      - [Qdrant](#qdrant)
+        - [Qdrant Cloud](#qdrant-cloud)
+        - [Self-hosted Qdrant Instance](#self-hosted-qdrant-instance)
+        - [Running Qdrant Integration Tests](#running-qdrant-integration-tests)
+      - [Redis](#redis)
+    - [Running the API locally](#running-the-api-locally)
+    - [Personalization](#personalization)
+    - [Authentication Methods](#authentication-methods)
+  - [Deployment](#deployment)
+    - [Deploying to Fly.io](#deploying-to-flyio)
+    - [Deploying to Heroku](#deploying-to-heroku)
+    - [Other Deployment Options](#other-deployment-options)
+  - [Installing a Developer Plugin](#installing-a-developer-plugin)
+  - [Webhooks](#webhooks)
+  - [Scripts](#scripts)
+  - [Limitations](#limitations)
+  - [Future Directions](#future-directions)
+  - [Contributors](#contributors)
 
 ## About
 
@@ -110,13 +123,14 @@ To include custom metadata fields, edit the `DocumentMetadata` and `DocumentMeta
 Follow these steps to quickly set up and run the ChatGPT Retrieval Plugin:
 
 1. Install Python 3.10, if not already installed.
-2. Clone the repository: `git clone https://github.com/openai/chatgpt-retrieval-plugin.git`
-3. Navigate to the cloned repository directory: `cd /path/to/chatgpt-retrieval-plugin`
+2. Clone the repository: `git clone https://github.com/openai/embedding-retrieval-plugin.git`
+3. Navigate to the cloned repository directory: `cd /path/to/embedding-retrieval-plugin`
 4. Install poetry: `pip install poetry`
-5. Create a new virtual environment with Python 3.10: `poetry env use python3.10`
-6. Activate the virtual environment: `poetry shell`
-7. Install app dependencies: `poetry install`
-8. Set the required environment variables:
+5. Config to set the environment in current project: `poetry config virtualenvs.in-project true`
+6. Create a new virtual environment with Python 3.10: `poetry env use python3.10`
+7. Activate the virtual environment: `poetry shell`
+8. Install app dependencies: `poetry install`
+9. Set the required environment variables:
 
    ```
    export DATASTORE=<your_datastore>
@@ -125,8 +139,8 @@ Follow these steps to quickly set up and run the ChatGPT Retrieval Plugin:
    <Add the environment variables for your chosen vector DB here>
    ```
 
-9. Run the API locally: `poetry run start`
-10. Access the API documentation at `http://0.0.0.0:8000/docs` and test the API endpoints (make sure to add your bearer token).
+10. Run the API locally: `poetry run start`
+11. Access the API documentation at `http://0.0.0.0:8000/docs` and test the API endpoints (make sure to add your bearer token).
 
 For more detailed information on setting up, developing, and deploying the ChatGPT Retrieval Plugin, refer to the full Development section below.
 
@@ -141,13 +155,13 @@ Install Python 3.10 on your machine if it isn't already installed. It can be dow
 Clone the repository from GitHub:
 
 ```
-git clone https://github.com/openai/chatgpt-retrieval-plugin.git
+git clone https://github.com/openai/embedding-retrieval-plugin.git
 ```
 
 Navigate to the cloned repository directory:
 
 ```
-cd /path/to/chatgpt-retrieval-plugin
+cd /path/to/embedding-retrieval-plugin
 ```
 
 Install poetry:
@@ -159,6 +173,7 @@ pip install poetry
 Create a new virtual environment that uses Python 3.10:
 
 ```
+poetry config virtualenvs.in-project true
 poetry env use python3.10
 poetry shell
 ```
@@ -189,7 +204,7 @@ The plugin supports several vector database providers, each with different featu
 
 [Pinecone](https://www.pinecone.io) is a managed vector database built for speed, scale, and shipping to production sooner. To use Pinecone as your vector database provider, first get an API key by [signing up for an account](https://app.pinecone.io/). You can access your API key from the "API Keys" section in the sidebar of your dashboard. Pinecone also supports hybrid search and at the time of writing is the only datastore to support SPLADE sparse vectors natively.
 
-A full Jupyter notebook walkthrough for the Pinecone flavor of the retrieval plugin can be found [here](https://github.com/openai/chatgpt-retrieval-plugin/blob/main/examples/providers/pinecone/semantic-search.ipynb). There is also a [video walkthrough here](https://youtu.be/hpePPqKxNq8).
+A full Jupyter notebook walkthrough for the Pinecone flavor of the retrieval plugin can be found [here](https://github.com/openai/embedding-retrieval-plugin/blob/main/examples/providers/pinecone/semantic-search.ipynb). There is also a [video walkthrough here](https://youtu.be/hpePPqKxNq8).
 
 The app will create a Pinecone index for you automatically when you run it for the first time. Just pick a name for your index and set it as an environment variable.
 
@@ -582,13 +597,13 @@ Install the [Fly.io CLI](https://fly.io/docs/getting-started/installing-flyctl/)
 Clone the repository from GitHub:
 
 ```
-git clone https://github.com/openai/chatgpt-retrieval-plugin.git
+git clone https://github.com/openai/embedding-retrieval-plugin.git
 ```
 
 Navigate to the cloned repository directory:
 
 ```
-cd path/to/chatgpt-retrieval-plugin
+cd path/to/embedding-retrieval-plugin
 ```
 
 Log in to the Fly.io CLI:
@@ -661,13 +676,13 @@ Install the [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli) on yo
 Clone the repository from GitHub:
 
 ```
-git clone https://github.com/openai/chatgpt-retrieval-plugin.git
+git clone https://github.com/openai/embedding-retrieval-plugin.git
 ```
 
 Navigate to the cloned repository directory:
 
 ```
-cd path/to/chatgpt-retrieval-plugin
+cd path/to/embedding-retrieval-plugin
 ```
 
 Log in to the Heroku CLI:
