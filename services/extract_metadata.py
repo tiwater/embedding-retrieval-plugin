@@ -16,7 +16,7 @@ def extract_metadata_from_document(text: str) -> Dict[str, str]:
             - source: string, one of {sources_string}
             - url: string or don't specify
             - created_at: string or don't specify
-            - author: string or don't specify
+            - user_id: string or don't specify
 
             Respond with a JSON containing the extracted metadata in key value pairs. If you don't find a metadata field, don't specify it.
             """,
@@ -43,22 +43,22 @@ def validate_meatadata(documents: List[Document]):
         if metadata is not None:
             scope = metadata.scope
             
-            # 如果 scope 为 personal，则检查 author 是否为空
-            if scope == Scope.personal and (metadata.author is None or len(metadata.author.strip()) == 0):
-                # 如果 author 为空，将 scope 调整为 其他最高级
+            # 如果 scope 为 personal，则检查 user_id 是否为空
+            if scope == Scope.personal and (metadata.user_id is None or len(metadata.user_id.strip()) == 0):
+                # 如果 user_id 为空，将 scope 调整为 其他最高级
                 if(metadata.org_id is not None and len(metadata.org_id.strip()) > 0):
                     metadata.scope = Scope.org
-                    print("Warn:", "No author provided, set the visibility scope to org for doc: ")
+                    print("Warn:", "No user_id provided, set the visibility scope to org for doc: ")
                     print(document.text)
                 else:
                     metadata.scope = Scope.public
-                    print("Warn:", "No author provided, set the visibility scope to public for doc: ")
+                    print("Warn:", "No user_id provided, set the visibility scope to public for doc: ")
                     print(document.text)
             
             # 如果 scope 为 org，则检查 org_id 是否为空
             elif scope == Scope.org and (metadata.org_id is None or len(metadata.org_id.strip()) == 0):
                 # 如果 org_id 为空，将 scope 调整为 其他最高级
-                if(metadata.author is not None and len(metadata.author.strip()) > 0):
+                if(metadata.user_id is not None and len(metadata.user_id.strip()) > 0):
                     metadata.scope = Scope.personal
                     print("Warn:", "No org_id provided, set the visibility scope to personal for doc: ")
                     print(document.text)

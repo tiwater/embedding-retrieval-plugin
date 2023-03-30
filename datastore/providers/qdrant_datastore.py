@@ -189,7 +189,7 @@ class QdrantDataStore(DataStore):
                 "document_id": "metadata.document_id",
                 "source": "metadata.source",
                 "source_id": "metadata.source_id",
-                "author": "metadata.author",
+                "user_id": "metadata.user_id",
             }
 
             for meta_attr_name, payload_key in meta_attributes_keys.items():

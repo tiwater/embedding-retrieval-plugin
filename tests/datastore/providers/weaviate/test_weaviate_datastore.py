@@ -50,7 +50,7 @@ def test_db(weaviate_client, documents):
 def documents():
     documents = []
 
-    authors = ["Max Mustermann", "John Doe", "Jane Doe"]
+    user_ids = ["Max Mustermann", "John Doe", "Jane Doe"]
     texts = [
         "lorem ipsum dolor sit amet",
         "consectetur adipiscing elit",
@@ -74,7 +74,7 @@ def documents():
                     "source_id": "5325",
                     "url": "http://example.com",
                     "created_at": created_at[i],
-                    "author": authors[i],
+                    "user_id": user_ids[i],
                 },
             }
         )
@@ -151,7 +151,7 @@ def test_upsert(weaviate_client, document_id):
     source_id = "5325"
     url = "http://example.com"
     created_at = "2022-12-16T08:00:00+01:00"
-    author = "Max Mustermann"
+    user_id = "Max Mustermann"
 
     documents = {
         "documents": [
@@ -163,7 +163,7 @@ def test_upsert(weaviate_client, document_id):
                     "source_id": source_id,
                     "url": url,
                     "created_at": created_at,
-                    "author": author,
+                    "user_id": user_id,
                 },
             }
         ]
@@ -181,7 +181,7 @@ def test_upsert(weaviate_client, document_id):
         "source_id",
         "url",
         "created_at",
-        "author",
+        "user_id",
     ]
 
     where_filter = {
@@ -211,7 +211,7 @@ def test_upsert(weaviate_client, document_id):
         assert weaviate_doc["source_id"] == source_id
         assert weaviate_doc["url"] == url
         assert weaviate_doc["created_at"] == created_at
-        assert weaviate_doc["author"] == author
+        assert weaviate_doc["user_id"] == user_id
 
         assert weaviate_doc["_additional"]["vector"]
 
@@ -230,7 +230,7 @@ def test_upsert_no_metadata(weaviate_client):
         "source_id",
         "url",
         "created_at",
-        "author",
+        "user_id",
     ]
 
     response = client.post("/upsert", json={"documents": [no_metadata_doc]})
@@ -393,7 +393,7 @@ def test_build_date_filters():
         document_id=None,
         source=None,
         source_id=None,
-        author=None,
+        user_id=None,
         start_date="2020-01-01T00:00:00Z",
         end_date="2022-12-31T00:00:00Z",
     )
@@ -441,7 +441,7 @@ def test_upsert_same_docid(test_db, weaviate_client):
             "source_id",
             "url",
             "created_at",
-            "author",
+            "user_id",
         ]
         where_filter = {
             "path": ["document_id"],

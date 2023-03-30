@@ -85,8 +85,8 @@ SCHEMA = [
     ("url", FieldSchema(name="url", dtype=DataType.VARCHAR, max_length=65535), ""),
     ("created_at", FieldSchema(name="created_at", dtype=DataType.INT64), -1),
     (
-        "author",
-        FieldSchema(name="author", dtype=DataType.VARCHAR, max_length=65535),
+        "user_id",
+        FieldSchema(name="user_id", dtype=DataType.VARCHAR, max_length=65535),
         "",
     ),
 ]

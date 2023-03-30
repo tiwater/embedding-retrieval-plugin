@@ -42,7 +42,7 @@ def document_chunk_one():
         "2009-01-03T16:39:57-08:00",
         "2021-01-21T10:00:00-02:00",
     ]
-    authors = ["Max Mustermann", "John Doe", "Jane Doe"]
+    user_ids = ["Max Mustermann", "John Doe", "Jane Doe"]
     embeddings = [[x] * OUTPUT_DIM for x in range(3)]
 
     for i in range(3):
@@ -55,7 +55,7 @@ def document_chunk_one():
                 source_id=source_ids[i],
                 url=urls[i],
                 created_at=created_ats[i],
-                author=authors[i],
+                user_id=user_ids[i],
             ),
             embedding=embeddings[i],  # type: ignore
         )
@@ -84,7 +84,7 @@ def document_chunk_two():
         "2009-01-03T16:39:57-08:00",
         "3021-01-21T10:00:00-02:00",
     ]
-    authors = ["Max Mustermann", "John Doe", "Jane Doe"]
+    user_ids = ["Max Mustermann", "John Doe", "Jane Doe"]
     embeddings = [[x] * OUTPUT_DIM for x in range(3)]
 
     for i in range(3):
@@ -97,7 +97,7 @@ def document_chunk_two():
                 source_id=source_ids[i],
                 url=urls[i],
                 created_at=created_ats[i],
-                author=authors[i],
+                user_id=user_ids[i],
             ),
             embedding=embeddings[i],  # type: ignore
         )
@@ -121,7 +121,7 @@ def document_chunk_two():
         "5009-01-03T16:39:57-08:00",
         "6021-01-21T10:00:00-02:00",
     ]
-    authors = ["Max Mustermann", "John Doe", "Jane Doe"]
+    user_ids = ["Max Mustermann", "John Doe", "Jane Doe"]
     embeddings = [[x] * OUTPUT_DIM for x in range(3, 6)]
 
     for i in range(3):
@@ -134,7 +134,7 @@ def document_chunk_two():
                 source_id=source_ids[i],
                 url=urls[i],
                 created_at=created_ats[i],
-                author=authors[i],
+                user_id=user_ids[i],
             ),
             embedding=embeddings[i],  # type: ignore
         )

@@ -48,7 +48,7 @@ REDIS_SEARCH_SCHEMA = {
     "metadata": {
         # "source_id": TagField("$.metadata.source_id", as_name="source_id"),
         "source": TagField("$.metadata.source", as_name="source"),
-        "author": TextField("$.metadata.author", as_name="author"),
+        "user_id": TextField("$.metadata.user_id", as_name="user_id"),
         "org_id": TextField("$.metadata.org_id", as_name="org_id"),
         "scope": TextField("$.metadata.scope", as_name="scope"),
         # "created_at": NumericField("$.metadata.created_at", as_name="created_at"),
@@ -223,8 +223,8 @@ class RedisDataStore(DataStore):
                 if field in REDIS_SEARCH_SCHEMA:
                     filter_str += _typ_to_str(REDIS_SEARCH_SCHEMA[field], field, value)
                 elif field in REDIS_SEARCH_SCHEMA["metadata"]:
-                    if field in ["author", "org_id"]:
-                      if field == "author":
+                    if field in ["user_id", "org_id"]:
+                      if field == "user_id":
                         scope_str.append(_typ_to_str(
                             REDIS_SEARCH_SCHEMA["metadata"][field], field, value))
                       else:

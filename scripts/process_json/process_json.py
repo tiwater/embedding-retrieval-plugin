@@ -31,7 +31,7 @@ async def process_json_dump(
             print(f"Processed {len(documents)} documents")
 
         try:
-            # get the id, text, source, source_id, url, created_at and author from the item
+            # get the id, text, source, source_id, url, created_at and user_id from the item
             # use default values if not specified
             id = item.get("id", None)
             text = item.get("text", None)
@@ -39,19 +39,19 @@ async def process_json_dump(
             source_id = item.get("source_id", None)
             url = item.get("url", None)
             created_at = item.get("created_at", None)
-            author = item.get("author", None)
+            user_id = item.get("user_id", None)
 
             if not text:
                 print("No document text, skipping...")
                 continue
 
-            # create a metadata object with the source, source_id, url, created_at and author
+            # create a metadata object with the source, source_id, url, created_at and user_id
             metadata = DocumentMetadata(
                 source=source,
                 source_id=source_id,
                 url=url,
                 created_at=created_at,
-                author=author,
+                user_id=user_id,
             )
             print("metadata: ", str(metadata))
 

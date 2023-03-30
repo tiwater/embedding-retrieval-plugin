@@ -19,7 +19,7 @@ class DocumentMetadata(BaseModel):
     source_id: Optional[str] = None
     url: Optional[str] = None
     created_at: Optional[str] = None
-    author: Optional[str] = None
+    user_id: Optional[str] = None
     org_id: Optional[str] = None
     scope: Optional[Scope] = Scope.personal
     
@@ -28,7 +28,7 @@ class DocumentMetadataForm(DocumentMetadata):
     source_id: Optional[str] = Field(None, alias="source_id")
     url: Optional[str] = Field(None, alias="url")
     created_at: Optional[str] = Field(None, alias="created_at")
-    author: Optional[str] = Field(None, alias="author")
+    user_id: Optional[str] = Field(None, alias="user_id")
     org_id: Optional[str] = Field(None, alias="org_id")
     scope: Optional[Scope] = Field(Scope.personal, alias="scope")
 
@@ -62,7 +62,7 @@ class DocumentMetadataFilter(BaseModel):
     document_id: Optional[str] = None
     source: Optional[Source] = None
     source_id: Optional[str] = None
-    author: Optional[str] = None
+    user_id: Optional[str] = None
     start_date: Optional[str] = None  # any date string format
     end_date: Optional[str] = None  # any date string format
     org_id: Optional[str] = None
