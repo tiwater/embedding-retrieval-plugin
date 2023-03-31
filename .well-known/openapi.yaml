@@ -4,7 +4,7 @@ info:
   description: A retrieval API for querying and filtering documents based on natural language queries and metadata
   version: 1.0.0
   servers:
-    - url: https://moss.tisvc.cc
+    - url: https://embedding.tisvc.cc
 paths:
   /embedding/query:
     post:
@@ -127,7 +127,7 @@ components:
         filter:
           $ref: "#/components/schemas/DocumentMetadataFilter"
         top_k:
-          title: Top K
+          title: Top K documents
           type: integer
           default: 3
     QueryRequest:

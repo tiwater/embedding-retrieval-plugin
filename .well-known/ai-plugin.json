@@ -12,11 +12,11 @@
 		}
 	},
 	"api":{
-    "url": "https://moss.tisvc.cc/.well-known/openapi.yaml",
+    "url": "https://embedding.tisvc.cc/.well-known/openapi.yaml",
 		"has_user_authentication":false,
 		"type":"openapi"
 	},
-  "logo_url": "https://moss.tisvc.cc/.well-known/logo.png",
+  "logo_url": "https://embedding.tisvc.cc/.well-known/logo.png",
   "contact_email": "hello@contact.com", 
   "legal_info_url": "hello@legal.com"
 }
