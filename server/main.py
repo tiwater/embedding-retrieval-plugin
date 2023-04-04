@@ -50,10 +50,10 @@ async def upsert_file(
     file: UploadFile = File(...),
     request: DocumentMetadataForm = Depends()
 ):
-    document = await get_document_from_file(file, request)
-
-    validate_meatadata([document])
     try:
+        document = await get_document_from_file(file, request)
+
+        validate_meatadata([document])
         ids = await datastore.upsert([document])
         return UpsertResponse(ids=ids)
     except Exception as e:
