@@ -36,5 +36,7 @@ ENV	REDIS_HOST	$ARG_REDIS_HOST
 ENV	REDIS_PORT	$ARG_REDIS_PORT
 ENV	REDIS_PASSWORD	$ARG_REDIS_PASSWORD
 
+EXPOSE 8000
+
 # Heroku uses PORT, Azure App Services uses WEBSITES_PORT, Fly.io uses 8080 by default
 CMD ["sh", "-c", "uvicorn server.main:app --host 0.0.0.0 --port 8000"]

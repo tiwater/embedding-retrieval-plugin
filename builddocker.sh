@@ -15,7 +15,7 @@ do
 done
 
 # 使用带有构建参数的 docker build 命令构建镜像
-docker build $BUILD_ARGS --build-arg ARG_ENV=$1 -t embedding-plugin:1.0 .
+docker build $BUILD_ARGS --build-arg ARG_ENV=$1 -t embedding-plugin:1.1 .
 
 # 取消设置环境变量
 unset $(grep -v '^#' .env.$1 | cut -d= -f1)
